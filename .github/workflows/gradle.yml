@@ -1,0 +1,53 @@
+name: Java CI with Gradle and Deploy to EC2 via SSM
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      # Checkout the repository
+      - uses: actions/checkout@v4
+
+      # Set up JDK 17
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      # Grant execution permission to Gradle wrapper
+      - name: Authorize gradlew
+        run: chmod +x gradlew
+
+      # Set up Gradle and enable caching for dependencies
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      # Build the project with Gradle Wrapper
+      - name: Build with Gradle Wrapper
+        run: ./gradlew build
+
+      # Deploy to EC2 using SSM
+      - name: Deploy to EC2 via SSM
+        env:
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          EC2_INSTANCE_ID: ${{ secrets.EC2_INSTANCE_ID }}
+        run: |
+          # Install AWS CLI (if not already installed)
+          sudo apt-get update && sudo apt-get install -y awscli
+
+          # Use AWS CLI to execute the deployment commands on EC2
+          aws ssm send-command \
+            --region "${AWS_REGION}" \
+            --document-name "AWS-RunShellScript" \
+            --targets "Key=instanceIds,Values=${EC2_INSTANCE_ID}" \
+            --parameters '{"commands":["cd /const_team1_backend", "git pull origin master", "./gradlew build", "./gradlew bootRun &"]}' \
+            --comment "Deploying new build to EC2 instance"

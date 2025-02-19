@@ -5,11 +5,13 @@ import com.example.const_team1_backend.common.exception.BadRequestException;
 import com.example.const_team1_backend.common.message.ErrorMessage;
 import com.example.const_team1_backend.config.s3.S3Service;
 import com.example.const_team1_backend.facility.dto.FacilityResponse;
+import com.example.const_team1_backend.operatingHours.OperatingHoursService;
 import com.example.const_team1_backend.review.Review;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -20,6 +22,9 @@ public class FacilityService extends BaseService<Facility,FacilityRepository> {
     @Autowired
     private S3Service s3Service;
 
+    @Autowired
+    private OperatingHoursService operatingHoursService;
+
     public FacilityService(FacilityRepository repository) {
         super(repository);
     }
@@ -29,6 +34,7 @@ public class FacilityService extends BaseService<Facility,FacilityRepository> {
         return repository.findById(id)
                 .orElseThrow(() -> new BadRequestException(ErrorMessage.FACILITY_NOT_EXIST.getMessage()));
     }
+
 
     @Transactional
     public Set<Review> getAllReviewsById(Long id) {
@@ -42,7 +48,7 @@ public class FacilityService extends BaseService<Facility,FacilityRepository> {
         if (facility == null) {
             throw new BadRequestException("시설이 존재하지 않습니다");
         }
-        return FacilityResponse.fromEntity(facility);
+        return FacilityResponse.fromEntity(facility,getOpenTime(facilityId),getCloseTime(facilityId));
     }
 
     @Transactional
@@ -67,5 +73,17 @@ public class FacilityService extends BaseService<Facility,FacilityRepository> {
             }
         }
         return responses;
+    }
+
+    public LocalTime getOpenTime(Long facilityId) {
+        repository.findById(facilityId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 시설이 존재하지 않습니다."));
+        return operatingHoursService.getFacilityOpenTime(facilityId);
+    }
+
+    public LocalTime getCloseTime(Long facilityId) {
+        repository.findById(facilityId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 시설이 존재하지 않습니다."));
+        return operatingHoursService.getFacilityCloseTime(facilityId);
     }
 }

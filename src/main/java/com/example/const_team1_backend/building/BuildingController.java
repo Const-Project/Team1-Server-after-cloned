@@ -43,6 +43,7 @@ public class BuildingController extends BaseController<Building,BuildingService>
         return ResponseEntity.ok(service.getBuildingResponseById(building_id));
     }
 
+
     @Transactional
     @GetMapping("/facilities/{id}")
     public ResponseEntity<Set<FacilityResponse>> getFacilities(@PathVariable Long id) {

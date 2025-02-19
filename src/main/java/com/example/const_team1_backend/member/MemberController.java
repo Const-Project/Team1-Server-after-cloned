@@ -7,6 +7,7 @@ import com.example.const_team1_backend.common.exception.TokenExpiredException;
 import com.example.const_team1_backend.common.message.ErrorMessage;
 import com.example.const_team1_backend.config.provider.JwtTokenProvider;
 import com.example.const_team1_backend.facility.Facility;
+import com.example.const_team1_backend.facility.FacilityService;
 import com.example.const_team1_backend.facility.dto.FacilityResponse;
 import com.example.const_team1_backend.member.dto.*;
 import com.example.const_team1_backend.review.Review;
@@ -33,6 +34,9 @@ import java.util.*;
 @RestController
 @RequestMapping(value = "/v1/members",produces = "application/json; charset=UTF-8")
 public class MemberController extends BaseController<Member,MemberService> {
+
+    @Autowired
+    private FacilityService facilityService;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -254,6 +258,7 @@ public class MemberController extends BaseController<Member,MemberService> {
         return ResponseEntity.ok(MemberResponse.fromEntity(member,service.getProfileImageUrl(member.getId())));
     }
 
+
     @Transactional
     @GetMapping("/saved/{member_id}")
     public ResponseEntity<Set<FacilityResponse>> getSavedFacility(@PathVariable Long member_id,@AuthenticationPrincipal UserDetails userDetails) throws AccessDeniedException {
@@ -264,7 +269,7 @@ public class MemberController extends BaseController<Member,MemberService> {
         }
         Set<FacilityResponse> responses = new HashSet<>();
         for(Facility facility: member.getSavedFacilities()){
-            responses.add(FacilityResponse.fromEntity(facility));
+            responses.add(FacilityResponse.fromEntity(facility,facilityService.getOpenTime(facility.getId()),facilityService.getCloseTime(facility.getId())));
         }
         return ResponseEntity.ok(responses);
     }

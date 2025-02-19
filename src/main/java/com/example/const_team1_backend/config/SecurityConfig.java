@@ -6,12 +6,12 @@ import com.example.const_team1_backend.config.service.CustomUserDetailsService;
 import com.example.const_team1_backend.member.MemberTokenRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -34,6 +34,10 @@ public class SecurityConfig {
     private final CustomUserDetailsService customUserDetailsService;
     private final JwtAuthenticationEntryPoint unauthorizedHandler;
     private final JwtTokenProvider jwtTokenProvider;
+
+    @Value("${spring.profiles.active:local}")
+    private String activeProfile;
+
     @Autowired
     private MemberTokenRepository memberTokenRepository;
     @Bean
@@ -44,6 +48,14 @@ public class SecurityConfig {
                 .cors(corsConfigurer -> corsConfigurer.configurationSource(corsConfigurationSource()))
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .requiresChannel(channel -> {
+                    if ("local".equals(activeProfile)) {
+                        channel.anyRequest().requiresSecure();
+                    } else {
+                        // EC2에서는 Nginx가 SSL을 처리하므로 HTTP 허용
+                        channel.anyRequest().requiresInsecure();
+                    }
+                })
                 .authorizeHttpRequests(auth -> {
                     auth
                             .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
@@ -59,7 +71,8 @@ public class SecurityConfig {
                                     "/v1/floor/**","/v3/api-docs/**",           // 추가
                                     "/swagger-ui/**",            // 추가
                                     "/swagger-ui.html",          // 추가
-                                    "/swagger-resources/**").permitAll()
+                                    "/swagger-resources/**",
+                                    "/v1/operatinghours/**").permitAll()
 
                             // Protected endpoints
                             .requestMatchers(HttpMethod.POST,

@@ -2,16 +2,12 @@ package com.example.const_team1_backend.member;
 
 import com.example.const_team1_backend.BaseService;
 import com.example.const_team1_backend.config.s3.S3Service;
-import com.example.const_team1_backend.facility.Facility;
-import com.example.const_team1_backend.reaction.Reaction;
-import com.example.const_team1_backend.review.Review;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.Optional;
-import java.util.Set;
 
 @Service("memberService")
 public class MemberService extends BaseService<Member,MemberRepository> {
@@ -27,6 +23,7 @@ public class MemberService extends BaseService<Member,MemberRepository> {
     public Optional<Member> findByLoginId(String loginId) {
         return repository.findByLoginId(loginId);
     }
+
 
     @Transactional
     public void createMember(Member member) {

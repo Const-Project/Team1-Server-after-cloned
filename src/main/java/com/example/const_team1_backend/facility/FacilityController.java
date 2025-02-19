@@ -50,6 +50,7 @@ public class FacilityController extends BaseController<Facility,FacilityService>
         return ResponseEntity.ok(responses);
     }
 
+
     @Transactional
     @GetMapping("/detail/{facil_id}")
     public ResponseEntity<FacilityResponse> getFacilityById(@PathVariable Long facil_id) {

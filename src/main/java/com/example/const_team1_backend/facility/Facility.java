@@ -3,7 +3,10 @@ package com.example.const_team1_backend.facility;
 import com.example.const_team1_backend.BaseEntity;
 import com.example.const_team1_backend.building.Building;
 import com.example.const_team1_backend.category.Category;
+import com.example.const_team1_backend.common.utils.OperatingHoursUtils;
 import com.example.const_team1_backend.location.Location;
+import com.example.const_team1_backend.operatingHours.entity.FacilityOperatingHours;
+import com.example.const_team1_backend.operatingHours.entity.OperatingHours;
 import com.example.const_team1_backend.reaction.Reaction;
 import com.example.const_team1_backend.review.Review;
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -11,6 +14,9 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -23,6 +29,9 @@ public class Facility extends BaseEntity {
     private Location location = new Location();
 
     private int floor;
+
+    @OneToMany(mappedBy = "facility", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    private Set<FacilityOperatingHours> operatingHours;
 
     @OneToMany(mappedBy = "facility", cascade = CascadeType.ALL, fetch = FetchType.LAZY,orphanRemoval = true)
     @JsonManagedReference
@@ -50,6 +59,7 @@ public class Facility extends BaseEntity {
         return cnt; // 좋아요의 총 개수 반환
     }
 
+
     public Long getTotalDislikes() {
         long cnt = 0L;
         for(Reaction reaction : reactions) {
@@ -74,5 +84,15 @@ public class Facility extends BaseEntity {
 
     public void deleteReaction(Reaction reaction) {
         reactions.remove(reaction);
+    }
+
+    public LocalTime getOpenTime(){
+        List<OperatingHours> operatingHoursSet = List.copyOf(operatingHours);
+        return OperatingHoursUtils.getOpenTimeForDate(LocalDate.now(),operatingHoursSet);
+    }
+
+    public LocalTime getCloseTime(){
+        List<OperatingHours> operatingHoursSet = List.copyOf(operatingHours);
+        return OperatingHoursUtils.getCloseTimeForDate(LocalDate.now(),operatingHoursSet);
     }
 }

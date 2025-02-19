@@ -24,6 +24,7 @@ public class MemberResponse {
     private Long totalSavedFacilities;
     private Set<FacilityResponse> savedFacilities;
 
+
     public static MemberResponse fromEntity(Member member,String profileImageUrl) {
         Set<FacilityResponse> savedFacilities = new HashSet<>();
         for(Facility facility : member.getSavedFacilities()){
@@ -35,6 +36,8 @@ public class MemberResponse {
                     facility.getTotalLikes(),
                     facility.getTotalDislikes(),
                     facility.getTotalReviews(),
+                    facility.getOpenTime()!=null?facility.getOpenTime():facility.getBuilding().getOpenTime(),
+                    facility.getCloseTime()!=null?facility.getCloseTime():facility.getBuilding().getCloseTime(),
                     facility.getReviews().stream()
                             .map(ReviewResponse::fromEntity) // 리뷰 엔티티를 ReviewResponse로 변환
                             .collect(Collectors.toSet())

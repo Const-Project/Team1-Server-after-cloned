@@ -14,7 +14,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -22,7 +21,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.GenericFilterBean;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -103,7 +101,8 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
                                 requestURI.startsWith("/v1/category") ||
                                 requestURI.startsWith("/v1/floor") ||
                                 requestURI.startsWith("/v1/reviews/") ||
-                                requestURI.startsWith("/v1/reactions")));
+                                requestURI.startsWith("/v1/reactions")) ||
+                        requestURI.startsWith("/v1/operatinghours"));
     }
 
     private void sendErrorResponse(ServletResponse response, int status, String message) throws IOException {

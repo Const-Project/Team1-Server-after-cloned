@@ -6,7 +6,9 @@ build/
 !**/src/test/**/build/
 juhopair.pem
 src/main/resources/application.properties
+src/main/resources/local-keystore.p12
 .properties
+.p12
 ### STS ###
 .apt_generated
 .classpath

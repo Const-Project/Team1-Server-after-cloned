@@ -49,11 +49,7 @@ public class SecurityConfig {
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .requiresChannel(channel -> {
-                    if ("local".equals(activeProfile)) {
-                        channel.anyRequest().requiresInsecure();  // 로컬은 HTTP 허용
-                    } else {
-                        channel.anyRequest().requiresSecure();    // EC2는 HTTPS 요구
-                    }
+                    channel.anyRequest().requiresSecure();
                 })
                 .authorizeHttpRequests(auth -> {
                     auth

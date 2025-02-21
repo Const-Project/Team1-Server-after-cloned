@@ -50,10 +50,9 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .requiresChannel(channel -> {
                     if ("local".equals(activeProfile)) {
-                        channel.anyRequest().requiresSecure();
+                        channel.anyRequest().requiresInsecure();  // 로컬은 HTTP 허용
                     } else {
-                        // EC2에서는 Nginx가 SSL을 처리하므로 HTTP 허용
-                        channel.anyRequest().requiresInsecure();
+                        channel.anyRequest().requiresSecure();    // EC2는 HTTPS 요구
                     }
                 })
                 .authorizeHttpRequests(auth -> {

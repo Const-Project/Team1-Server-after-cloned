@@ -1,5 +1,6 @@
 package com.example.const_team1_backend.facility.dto;
 
+import com.example.const_team1_backend.converter.FacilityNameConverter;
 import com.example.const_team1_backend.facility.Facility;
 import com.example.const_team1_backend.review.dto.ReviewResponse;
 import lombok.AllArgsConstructor;
@@ -31,7 +32,7 @@ public class FacilityResponse { // 시설 id
     public static FacilityResponse fromEntity(Facility facility,LocalTime openTime, LocalTime closeTime) {
         return new FacilityResponse(
                 facility.getId(),
-                facility.getName(),
+                FacilityNameConverter.convertName(facility.getName())==null? facility.getName() : FacilityNameConverter.convertName(facility.getName()),
                 facility.getCategory().getId(),
                 facility.getFloor(),
                 facility.getTotalLikes(),

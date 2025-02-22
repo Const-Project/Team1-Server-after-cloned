@@ -1,6 +1,7 @@
 package com.example.const_team1_backend.building.dto;
 
 import com.example.const_team1_backend.building.Building;
+import com.example.const_team1_backend.converter.BuildingNameConverter;
 import com.example.const_team1_backend.facility.dto.FacilityResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -46,7 +47,7 @@ public class BuildingResponse {
                 .collect(Collectors.toSet());
         return BuildingResponse.builder()
                 .buildingId(building.getId())
-                .name(building.getName())
+                .name(BuildingNameConverter.convertName(building.getName())==null?building.getName():BuildingNameConverter.convertName(building.getName()))
                 .imageUrl(imageUrl)
                 .totalFloors(building.getActualTotalFloors())
                 .latitude(building.getLatitude())  // 직접 필드 사용

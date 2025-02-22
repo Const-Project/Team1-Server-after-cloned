@@ -123,6 +123,7 @@ public class MemberController extends BaseController<Member,MemberService> {
 
         return ResponseEntity.ok(AuthResponse.fromTokenAndMemberId(
                 member.getId(),
+                member.getUsername(),
                 tokens.get("accessToken"),
                 tokens.get("refreshToken")
         ));

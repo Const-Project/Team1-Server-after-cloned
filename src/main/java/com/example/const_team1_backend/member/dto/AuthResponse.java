@@ -9,10 +9,11 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class AuthResponse {
     private Long member_id;
+    private String username;
     private String accessToken;
     private String refreshToken;
 
-    public static AuthResponse fromTokenAndMemberId(Long id,String accessToken,String refreshToken) {
-        return new AuthResponse(id,accessToken,refreshToken);
+    public static AuthResponse fromTokenAndMemberId(Long id,String username,String accessToken,String refreshToken) {
+        return new AuthResponse(id,username,accessToken,refreshToken);
     }
 }

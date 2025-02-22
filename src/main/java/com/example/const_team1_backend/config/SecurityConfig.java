@@ -58,7 +58,7 @@ public class SecurityConfig {
                             .requestMatchers(HttpMethod.POST, "/v1/members/join", "/v1/members/login").permitAll()
                             .requestMatchers(HttpMethod.GET,
                                     "/v1/buildings/**",
-                                    "/favicon.ico",
+                                    "/favicon.ico/**",
                                     "/v1/facilities/**",
                                     "/v1/category/**",
                                     "/v1/reviews/**",

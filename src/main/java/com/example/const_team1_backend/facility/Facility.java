@@ -31,6 +31,7 @@ public class Facility extends BaseEntity {
     private int floor;
 
     @OneToMany(mappedBy = "facility", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @JsonManagedReference
     private Set<FacilityOperatingHours> operatingHours;
 
     @OneToMany(mappedBy = "facility", cascade = CascadeType.ALL, fetch = FetchType.LAZY,orphanRemoval = true)

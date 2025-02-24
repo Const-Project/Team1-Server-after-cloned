@@ -1,6 +1,7 @@
 package com.example.const_team1_backend.operatingHours.entity;
 
 import com.example.const_team1_backend.facility.Facility;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -18,6 +19,7 @@ public class FacilityOperatingHours extends OperatingHours {
     
     @ManyToOne
     @JoinColumn(name = "facility_id")
+    @JsonBackReference
     private Facility facility;
 
 }

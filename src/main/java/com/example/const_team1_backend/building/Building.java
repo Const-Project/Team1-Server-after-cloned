@@ -37,6 +37,7 @@ public class Building extends BaseEntity {
     private Double longitude;
 
     @OneToMany(mappedBy = "building", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @JsonManagedReference
     private Set<BuildingOperatingHours> operatingHours;
 
     @OneToMany(mappedBy = "building", cascade = CascadeType.ALL, fetch = FetchType.LAZY,orphanRemoval = true)

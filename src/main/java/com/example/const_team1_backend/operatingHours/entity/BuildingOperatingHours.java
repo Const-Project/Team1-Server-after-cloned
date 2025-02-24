@@ -2,6 +2,7 @@
 package com.example.const_team1_backend.operatingHours.entity;
 
 import com.example.const_team1_backend.building.Building;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -18,6 +19,7 @@ import lombok.Setter;
 public class BuildingOperatingHours extends OperatingHours {
     @ManyToOne
     @JoinColumn(name = "building_id")
+    @JsonBackReference
     private Building building;
 
 }

@@ -23,8 +23,8 @@ public class ReviewResponse {
     public static ReviewResponse fromEntity(Review review) {
         return new ReviewResponse(
                 review.getId(),
-                review.getContent(),
                 review.getMember().getUsername(),
+                review.getContent(),
                 review.getCreatedAt() == null ? LocalDateTime.now() : review.getCreatedAt(),
                 review.getTotalLikes(),
                 true

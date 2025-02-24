@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 @Setter
 public class ReviewResponse {
     private Long reviewId;
+    private String username;
     private String content;
     private LocalDateTime createdAt;
     private Long totalLikes;
@@ -23,6 +24,7 @@ public class ReviewResponse {
         return new ReviewResponse(
                 review.getId(),
                 review.getContent(),
+                review.getMember().getUsername(),
                 review.getCreatedAt() == null ? LocalDateTime.now() : review.getCreatedAt(),
                 review.getTotalLikes(),
                 true

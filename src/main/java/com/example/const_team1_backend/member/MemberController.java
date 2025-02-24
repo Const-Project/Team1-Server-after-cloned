@@ -246,6 +246,20 @@ public class MemberController extends BaseController<Member,MemberService> {
     }
 
     @Transactional
+    @PostMapping("/username/{member_id}")
+    public ResponseEntity<SuccessResponse> changeUsername(@PathVariable Long member_id,@AuthenticationPrincipal UserDetails userDetails,@RequestBody UsernameChangeRequest request) throws AccessDeniedException {
+        Member member = service.findByLoginId(userDetails.getUsername())
+                .orElseThrow(() -> new BadRequestException(ErrorMessage.INVALID_CREDENTIALS.getMessage()));
+        if (!member.getId().equals(member_id)) {
+            throw new AccessDeniedException(ErrorMessage.NOT_AUTHORIZED.getMessage());
+        }
+
+        member.setUsername(request.getUsername());
+        service.save(member);
+        return ResponseEntity.ok(SuccessResponse.success("이름이 변경되었습니다."+request.getUsername()));
+    }
+
+    @Transactional
     @GetMapping("/detail/{member_id}")
     public ResponseEntity<MemberResponse> getMemberInfo(
             @PathVariable Long member_id,
